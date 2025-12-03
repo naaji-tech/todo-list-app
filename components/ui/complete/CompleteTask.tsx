@@ -1,6 +1,5 @@
-import theme from "@/theme/colors";
+import theme from "@/constants/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { clsx } from "clsx";
 import { Checkbox } from "expo-checkbox";
 import { useState } from "react";
 import { Text, useColorScheme, View } from "react-native";
@@ -27,20 +26,10 @@ export default function CompleteTask({
           color={isChecked ? theme.colors.checkbox.active : undefined}
         />
         <View className="-mt-1 pl-4">
-          <Text
-            className={clsx(
-              `text-gray-900 dark:text-gray-300 text-xl mb-1 ${isChecked ? "line-through text-gray-500 dark:text-gray-600" : ""}`
-            )}
-          >
+          <Text className="text-xl mb-1 text-gray-500 dark:text-gray-600">
             {taskTitle}
           </Text>
-          <Text
-            className={clsx(
-              `text-gray-700 dark:text-gray-400 ${isChecked ? "line-through text-gray-500 dark:text-gray-600" : ""}`
-            )}
-          >
-            {taskTime}
-          </Text>
+          <Text className="text-gray-500 dark:text-gray-600">{taskTime}</Text>
         </View>
       </View>
       <View className="flex flex-row items-center gap-4">

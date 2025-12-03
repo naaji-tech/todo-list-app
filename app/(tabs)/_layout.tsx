@@ -1,5 +1,5 @@
 import CustomHeader from "@/components/ui/CustomHeader";
-import theme from "@/theme/colors";
+import theme from "@/constants/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
 import { useColorScheme } from "react-native";

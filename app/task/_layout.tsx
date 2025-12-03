@@ -1,10 +1,12 @@
-import theme from "@/theme/colors";
-import { Stack } from "expo-router";
+import theme from "@/constants/colors";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from "react-native";
 
 export default function TaskLayout() {
   const colorScheme = useColorScheme();
+  const taskScreenTitleParam = useLocalSearchParams().taskScreenTitle;
+  const taskScreenTitle = typeof taskScreenTitleParam === 'string' ? taskScreenTitleParam : "New Task";
 
   return (
     <>
@@ -22,7 +24,7 @@ export default function TaskLayout() {
               ? theme.colors.dark.text
               : theme.colors.light.text,
           headerShadowVisible: false,
-          headerTitle: "New Task",
+          headerTitle: taskScreenTitle || "New Task",
           headerTitleStyle: {
             fontSize: 22,
             fontWeight: "bold",

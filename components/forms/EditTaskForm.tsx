@@ -9,15 +9,50 @@ import TimePicker from "../ui/task/DateTimePicker";
 import YesNoSwitch from "../ui/task/Switch";
 import { TextInputField } from "../ui/task/TextInput";
 
-export default function NewTaskForm() {
-  const [taskName, setTaskName] = useState("");
-  const [selectedTime, setSelectedTime] = useState(new Date());
+interface EditTaskFormProps {
+  taskTitle: string;
+  taskDate: string;
+  taskTime: string;
+  isStarred: boolean;
+}
+
+export default function EditTaskForm({
+  taskTitle,
+  taskTime,
+  taskDate,
+  isStarred,
+}: EditTaskFormProps) {
+  const [taskName, setTaskName] = useState(taskTitle);
+
+  const [selectedTime, setSelectedTime] = useState(() => {
+    const timeMatch = taskTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (timeMatch) {
+      let hours = parseInt(timeMatch[1]);
+      const minutes = parseInt(timeMatch[2]);
+      const period = timeMatch[3].toUpperCase();
+
+      if (period === "PM" && hours !== 12) hours += 12;
+      if (period === "AM" && hours === 12) hours = 0;
+
+      const time = new Date();
+      time.setHours(hours, minutes, 0, 0);
+      console.log("time", time);
+      return time;
+    }
+    return new Date();
+  });
+
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
+    new Date(taskDate).toISOString().split("T")[0]
   );
+
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [isToday, setIsToday] = useState(true);
-  const [isImportant, setIsImportant] = useState(false);
+
+  const [isToday, setIsToday] = useState(
+    new Date(taskDate).toDateString() === new Date().toDateString()
+  );
+
+  const [isImportant, setIsImportant] = useState(isStarred);
 
   const router = useRouter();
 
@@ -75,9 +110,9 @@ export default function NewTaskForm() {
         </Pressable>
 
         <ThemeButton
-          title="Create Task"
+          title="Edit Task"
           onPress={() => {
-            console.log("Create task button pressed.");
+            console.log("Edit task button pressed.");
             router.dismissTo("/");
           }}
         />

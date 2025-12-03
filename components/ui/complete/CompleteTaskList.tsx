@@ -1,26 +1,40 @@
-import { Text, View } from "react-native";
+import { Task } from "@/constants/types";
+import { formatDate } from "@/util/util";
+import { FlatList, Text, View } from "react-native";
 import CompleteTask from "./CompleteTask";
 
-export default function CompleteTaskList() {
+interface CompleteTaskListProps {
+  date: string;
+  tasks: Task[];
+}
+
+export default function CompleteTaskList({
+  date,
+  tasks,
+}: CompleteTaskListProps) {
+  const hasCompleteTasks = tasks.some((task) => task.isComplete);
+
+  if (!hasCompleteTasks) {
+    return null;
+  }
+
   return (
     <View className="mb-8 ">
       <Text className="text-gray-900 dark:text-gray-300 text-3xl font-bold pb-6">
-        Today
+        {formatDate(date)}
       </Text>
-      <CompleteTask
-        taskTitle="Meeting with manager"
-        taskTime="10:00 AM - 11:00 AM"
-        isStarred={true}
-      />
-      <CompleteTask
-        taskTitle="Workout session"
-        taskTime="4:00 PM - 5:00 PM"
-        isStarred={false}
-      />
-      <CompleteTask
-        taskTitle="Go grocery shopping"
-        taskTime="2:00 PM - 3:00 PM"
-        isStarred={false}
+      <FlatList
+        data={tasks}
+        renderItem={({ item }) => {
+          if (item.isComplete === false) return null;
+          return (
+            <CompleteTask
+              taskTitle={item.title}
+              taskTime={item.time}
+              isStarred={item.isStarred}
+            />
+          );
+        }}
       />
     </View>
   );
