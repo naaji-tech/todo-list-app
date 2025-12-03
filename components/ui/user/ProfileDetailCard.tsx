@@ -17,7 +17,7 @@ export default function ProfileDetailCard({
   setInfo,
   isEditable,
 }: ProfileDetailCardProps) {
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  
 
   const [selectedDate, setSelectedDate] = useState(
     title === "Birth Date" ? parseDateString(info) : new Date()
@@ -38,8 +38,6 @@ export default function ProfileDetailCard({
             <DatePicker
               selectedDate={selectedDate}
               setSelectedDate={handleDateChange}
-              showDatePicker={showDatePicker}
-              setShowDatePicker={setShowDatePicker}
             />
           </View>
         ) : title === "Mobile Number" ? (

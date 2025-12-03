@@ -18,6 +18,7 @@ export default function User() {
     location,
     setLocation,
     profileUrl,
+    updateProfile,
   } = useProfileUser();
 
   const [isEditable, setIsEditable] = useState(false);
@@ -25,6 +26,7 @@ export default function User() {
   const handleSave = () => {
     Alert.alert("Profile Saved", "Your profile changes have been saved.");
     setIsEditable(false);
+    updateProfile();
   };
 
   return (

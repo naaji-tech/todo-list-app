@@ -1,6 +1,7 @@
 import theme from "@/constants/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 interface TimePickerProps {
@@ -13,8 +14,6 @@ interface TimePickerProps {
 interface DatePickerProps {
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
-  showDatePicker: boolean;
-  setShowDatePicker: (show: boolean) => void;
 }
 
 export default function TimePicker({
@@ -68,17 +67,18 @@ export default function TimePicker({
   );
 }
 
-export function DatePicker({
-  selectedDate,
-  setSelectedDate,
-  showDatePicker,
-  setShowDatePicker,
-}: DatePickerProps) {
+export function DatePicker({ selectedDate, setSelectedDate }: DatePickerProps) {
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   const onChange = (event: any, date?: Date) => {
     if (date) {
       setSelectedDate(date);
     }
     setShowDatePicker(false);
+  };
+
+  const handlePress = () => {
+    setShowDatePicker(true);
   };
 
   return (
@@ -88,9 +88,7 @@ export function DatePicker({
           color: "#b3b3b3",
           foreground: true,
         }}
-        onPress={() => {
-          setShowDatePicker(true);
-        }}
+        onPress={handlePress}
         className="flex flex-row items-center justify-start overflow-hidden rounded-xl border border-gray-500"
       >
         <Ionicons

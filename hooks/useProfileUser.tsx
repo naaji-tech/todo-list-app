@@ -11,6 +11,14 @@ export default function useProfileUser() {
 
   const profileUrl = USER_PROFILE.profileUrl;
 
+  function updateProfile() {
+    USER_PROFILE.name = name;
+    USER_PROFILE.dateOfBirth = dateOfBirth;
+    USER_PROFILE.email = email;
+    USER_PROFILE.mobileNumber = mobileNumber;
+    USER_PROFILE.location = location;
+  }
+
   return {
     name,
     setName,
@@ -23,5 +31,6 @@ export default function useProfileUser() {
     location,
     setLocation,
     profileUrl,
+    updateProfile,
   };
 }
