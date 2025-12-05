@@ -1,17 +1,27 @@
+import { UserProfile } from "@/constants/types";
 import { USER_PROFILE } from "@/data/placeholder-data";
-import { useState } from "react";
 
 export default function useProfileUser() {
-  // State for editable fields
-  const [name, setName] = useState(USER_PROFILE.name);
-  const [dateOfBirth, setDateOfBirth] = useState(USER_PROFILE.dateOfBirth);
-  const [email, setEmail] = useState(USER_PROFILE.email);
-  const [mobileNumber, setMobileNumber] = useState(USER_PROFILE.mobileNumber);
-  const [location, setLocation] = useState(USER_PROFILE.location);
+  function getUserProfile(): UserProfile {
+    const userProfile: UserProfile = {
+      id: USER_PROFILE.id,
+      profileUrl: USER_PROFILE.profileUrl,
+      name: USER_PROFILE.name,
+      dateOfBirth: USER_PROFILE.dateOfBirth,
+      email: USER_PROFILE.email,
+      mobileNumber: USER_PROFILE.mobileNumber,
+      location: USER_PROFILE.location,
+    };
+    return userProfile;
+  }
 
-  const profileUrl = USER_PROFILE.profileUrl;
-
-  function updateProfile() {
+  function updateProfile(
+    name: string,
+    dateOfBirth: string,
+    email: string,
+    mobileNumber: string,
+    location: string
+  ) {
     USER_PROFILE.name = name;
     USER_PROFILE.dateOfBirth = dateOfBirth;
     USER_PROFILE.email = email;
@@ -20,17 +30,7 @@ export default function useProfileUser() {
   }
 
   return {
-    name,
-    setName,
-    dateOfBirth,
-    setDateOfBirth,
-    email,
-    setEmail,
-    mobileNumber,
-    setMobileNumber,
-    location,
-    setLocation,
-    profileUrl,
+    getUserProfile,
     updateProfile,
   };
 }

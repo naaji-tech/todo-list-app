@@ -1,5 +1,5 @@
 import { parseDateString } from "@/util/util";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { DatePicker } from "../task/DateTimePicker";
 import { TextInputField } from "../task/TextInput";
@@ -17,8 +17,6 @@ export default function ProfileDetailCard({
   setInfo,
   isEditable,
 }: ProfileDetailCardProps) {
-  
-
   const [selectedDate, setSelectedDate] = useState(
     title === "Birth Date" ? parseDateString(info) : new Date()
   );
@@ -28,6 +26,12 @@ export default function ProfileDetailCard({
     const formatted = `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}`;
     setInfo(formatted);
   };
+
+  useEffect(() => {
+    setSelectedDate(
+      title === "Birth Date" ? parseDateString(info) : new Date()
+    );
+  }, [info, title]);
 
   return (
     <View className="mt-6">

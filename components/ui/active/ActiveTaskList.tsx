@@ -6,9 +6,16 @@ import ActiveTask from "./ActiveTask";
 type ActiveTaskListProps = {
   date: string;
   tasks: Task[];
+  updateCompleteStatus: (taskId: string, isComplete: boolean) => void;
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export default function ActiveTaskList({ date, tasks }: ActiveTaskListProps) {
+export default function ActiveTaskList({
+  date,
+  tasks,
+  updateCompleteStatus,
+  setRefreshKey,
+}: ActiveTaskListProps) {
   return (
     <View className="mb-8 ">
       <Text className="text-gray-900 dark:text-gray-300 text-3xl font-bold pb-6">
@@ -20,11 +27,14 @@ export default function ActiveTaskList({ date, tasks }: ActiveTaskListProps) {
         renderItem={({ item }) => {
           return (
             <ActiveTask
+              taskId={item.id}
               taskTitle={item.title}
               taskDate={date}
               taskTime={item.time}
               isStarred={item.isStarred}
               isCompleted={item.isComplete}
+              updateCompleteStatus={updateCompleteStatus}
+              setRefreshKey={setRefreshKey}
             />
           );
         }}

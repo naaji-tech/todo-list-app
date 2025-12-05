@@ -1,13 +1,13 @@
 import theme from "@/constants/colors";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useColorScheme } from "react-native";
+import { useColorScheme, View } from "react-native";
 
 export default function ProfileLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <>
+    <View className="flex-1">
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       <Stack
         screenOptions={{
@@ -38,6 +38,6 @@ export default function ProfileLayout() {
       >
         <Stack.Screen name="user" />
       </Stack>
-    </>
+    </View>
   );
 }

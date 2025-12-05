@@ -1,4 +1,5 @@
 import theme from "@/constants/colors";
+import useTasks from "@/hooks/useTasks";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -10,6 +11,7 @@ import YesNoSwitch from "../ui/task/Switch";
 import { TextInputField } from "../ui/task/TextInput";
 
 interface EditTaskFormProps {
+  taskId: string;
   taskTitle: string;
   taskDate: string;
   taskTime: string;
@@ -17,6 +19,7 @@ interface EditTaskFormProps {
 }
 
 export default function EditTaskForm({
+  taskId,
   taskTitle,
   taskTime,
   taskDate,
@@ -55,6 +58,28 @@ export default function EditTaskForm({
   const [isImportant, setIsImportant] = useState(isStarred);
 
   const router = useRouter();
+  const { editTask } = useTasks();
+
+  const handleEditTask = () => {
+    console.log("Edit task button pressed.");
+    editTask(
+      taskId,
+      taskName,
+      selectedDate,
+      selectedTime.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      isImportant,
+      false
+    );
+
+    router.dismissTo("/");
+  };
+
+  const handleSetImportantPress = () => {
+    setIsImportant(!isImportant);
+  };
 
   return (
     <ScrollView>
@@ -92,9 +117,7 @@ export default function EditTaskForm({
         </View>
 
         <Pressable
-          onPress={() => {
-            setIsImportant(!isImportant);
-          }}
+          onPress={handleSetImportantPress}
           className="flex flex-row items-center justify-center self-start gap-2 py-2"
         >
           <Ionicons
@@ -109,13 +132,7 @@ export default function EditTaskForm({
           </Text>
         </Pressable>
 
-        <ThemeButton
-          title="Edit Task"
-          onPress={() => {
-            console.log("Edit task button pressed.");
-            router.dismissTo("/");
-          }}
-        />
+        <ThemeButton title="Edit Task" onPress={handleEditTask} />
       </View>
     </ScrollView>
   );

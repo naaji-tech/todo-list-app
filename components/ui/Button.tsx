@@ -1,7 +1,6 @@
 import theme from "@/constants/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { clsx } from "clsx";
-import { useRouter } from "expo-router";
+import type { ComponentProps } from "react";
 import { Pressable, Text, useColorScheme } from "react-native";
 
 interface TextButtonProps {
@@ -14,10 +13,20 @@ interface ThemedButtonProps {
   title: string;
   onPress: () => void;
 }
+interface IconTextButtonProps {
+  iconName: ComponentProps<typeof Ionicons>["name"];
+  iconSize: number;
+  iconColor: string;
+  textColor: string;
+  buttonText: string;
+  onPress: () => void;
+}
 
-interface EditButtonProps {
-  isEditable: boolean;
-  setIsEditable: (editable: boolean) => void;
+interface FloatingButtonProps {
+  icon: ComponentProps<typeof Ionicons>["name"];
+  iconSize: number;
+  buttonText: string;
+  onPress: () => void;
 }
 
 export function TextButton({ title, onPress, style = {} }: TextButtonProps) {
@@ -33,9 +42,13 @@ export function TextButton({ title, onPress, style = {} }: TextButtonProps) {
   );
 }
 
-export default function FloatingButton() {
+export function FloatingButton({
+  icon,
+  iconSize,
+  buttonText,
+  onPress,
+}: FloatingButtonProps) {
   const colorScheme = useColorScheme();
-  const router = useRouter();
 
   return (
     <Pressable
@@ -44,15 +57,11 @@ export default function FloatingButton() {
         foreground: true,
       }}
       className="flex flex-row gap-2 absolute bottom-6 right-6 bg-slate-400 elevation dark:bg-slate-600 p-5 rounded-2xl overflow-hidden"
-      onPress={() => {
-        router.push({
-          pathname: "/task/new-task",
-        });
-      }}
+      onPress={onPress}
     >
       <Ionicons
-        name="add"
-        size={20}
+        name={icon}
+        size={iconSize}
         color={
           colorScheme === "dark"
             ? theme.colors.icons.light
@@ -60,7 +69,7 @@ export default function FloatingButton() {
         }
       />
       <Text className="text-gray-900 dark:text-gray-300 text-xl text-center">
-        New task
+        {buttonText}
       </Text>
     </Pressable>
   );
@@ -83,36 +92,22 @@ export function ThemeButton({ title, onPress }: ThemedButtonProps) {
   );
 }
 
-export function EditTextButton({ isEditable, setIsEditable }: EditButtonProps) {
-  const colorScheme = useColorScheme();
-
+export function IconTextButton({
+  iconName,
+  iconSize,
+  iconColor,
+  textColor,
+  buttonText,
+  onPress,
+}: IconTextButtonProps) {
   return (
     <Pressable
       className="flex flex-row gap-1 pt-2 self-start"
-      onPress={() => {
-        console.log("User profile edit pressed");
-        setIsEditable(!isEditable);
-      }}
+      onPress={onPress}
     >
-      <Ionicons
-        name={`${isEditable ? "close" : "create-outline"}`}
-        size={16}
-        color={
-          colorScheme === "dark"
-            ? isEditable
-              ? theme.colors.icons.delete
-              : theme.colors.icons.light
-            : isEditable
-              ? theme.colors.icons.delete
-              : theme.colors.icons.dark
-        }
-      />
-      <Text
-        className={clsx(
-          `${isEditable ? "text-red-600" : "text-gray-900 dark:text-gray-300 "} text-base`
-        )}
-      >
-        {isEditable ? "Cancel" : "Edit"}
+      <Ionicons name={iconName} size={iconSize} color={iconColor} />
+      <Text className="text-base" style={{ color: textColor }}>
+        {buttonText}
       </Text>
     </Pressable>
   );

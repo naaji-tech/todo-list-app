@@ -1,4 +1,5 @@
 import theme from "@/constants/colors";
+import useTasks from "@/hooks/useTasks";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { clsx } from "clsx";
 import { Checkbox } from "expo-checkbox";
@@ -7,52 +8,85 @@ import { useRef, useState } from "react";
 import { Modal, Pressable, Text, useColorScheme, View } from "react-native";
 
 interface ActiveTaskProps {
+  taskId: string;
   taskTitle: string;
   taskDate: string;
   taskTime: string;
   isStarred: boolean;
   isCompleted: boolean;
+  updateCompleteStatus: (taskId: string, isComplete: boolean) => void;
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function ActiveTask({
+  taskId,
   taskTitle,
   taskDate,
   taskTime,
   isStarred,
   isCompleted,
+  updateCompleteStatus,
+  setRefreshKey,
 }: ActiveTaskProps) {
   const colorScheme = useColorScheme();
-  const [isChecked, setChecked] = useState(isCompleted);
+
+  const [isCompeleState, setCompeleState] = useState(isCompleted);
+
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
   const buttonRef = useRef<View>(null);
   const router = useRouter();
+  const { deleteTask } = useTasks();
+
+  const handleOnPress = () => {
+    const newState = !isCompeleState;
+    setCompeleState(newState);
+    updateCompleteStatus(taskId, newState);
+  };
+
+  const handleOnEditPress = () => {
+    setMenuVisible(false);
+    console.log("Edit task:", taskTitle);
+    router.push({
+      pathname: "/task/edit-task",
+      params: {
+        taskScreenTitle: "Edit Task",
+        taskId: taskId,
+        taskTitle: taskTitle,
+        taskDate: taskDate,
+        taskTime: taskTime,
+        isStarred: isStarred.toString(),
+        isCompleted: isCompleted.toString(),
+      },
+    });
+  };
+
+  const handleOnDeletePress = () => {
+    deleteTask(taskId, setRefreshKey);
+    setMenuVisible(false);
+    console.log("Delete task:", taskTitle);
+  };
 
   return (
     <View className="flex flex-row w-full items-start justify-between">
-      <Pressable
-        onPress={() => {
-          isCompleted = !isCompleted;
-          setChecked(!isChecked);
-        }}
-      >
+      <Pressable onPress={handleOnPress}>
         <View className="flex flex-row items-start ml-1 mb-8">
           <Checkbox
-            value={isChecked}
-            onValueChange={setChecked}
-            color={isChecked ? theme.colors.checkbox.active : undefined}
+            value={isCompeleState}
+            onValueChange={setCompeleState}
+            color={isCompeleState ? theme.colors.checkbox.active : undefined}
           />
           <View className="-mt-1 pl-4">
             <Text
               className={clsx(
-                `text-gray-900 dark:text-gray-300 text-xl mb-1 ${isChecked ? "line-through text-gray-500 dark:text-gray-600" : ""}`
+                `text-gray-900 dark:text-gray-300 text-xl mb-1 ${isCompeleState ? "line-through text-gray-500 dark:text-gray-600" : ""}`
               )}
             >
               {taskTitle}
             </Text>
             <Text
               className={clsx(
-                `text-gray-700 dark:text-gray-400 ${isChecked ? "line-through text-gray-500 dark:text-gray-600" : ""}`
+                `text-gray-700 dark:text-gray-400 ${isCompeleState ? "line-through text-gray-500 dark:text-gray-600" : ""}`
               )}
             >
               {taskTime}
@@ -64,7 +98,7 @@ export default function ActiveTask({
         {isStarred && (
           <Ionicons name="star" size={20} color={theme.colors.icons.star} />
         )}
-        {!isChecked && (
+        {!isCompeleState && (
           <View>
             <Pressable
               ref={buttonRef}
@@ -116,21 +150,7 @@ export default function ActiveTask({
                 >
                   <Pressable
                     className="flex flex-row items-center px-4 py-3 active:bg-gray-100 dark:active:bg-slate-700"
-                    onPress={() => {
-                      setMenuVisible(false);
-                      console.log("Edit task:", taskTitle);
-                      router.push({
-                        pathname: "/task/edit-task",
-                        params: {
-                          taskScreenTitle: "Edit Task",
-                          taskTitle: taskTitle,
-                          taskDate: taskDate,
-                          taskTime: taskTime,
-                          isStarred: isStarred.toString(),
-                          isCompleted: isCompleted.toString(),
-                        },
-                      });
-                    }}
+                    onPress={handleOnEditPress}
                   >
                     <Ionicons
                       name="create-outline"
@@ -150,11 +170,7 @@ export default function ActiveTask({
 
                   <Pressable
                     className="flex flex-row items-center px-4 py-3 active:bg-gray-100 dark:active:bg-slate-700"
-                    onPress={() => {
-                      setMenuVisible(false);
-                      console.log("Delete task:", taskTitle);
-                      // Add delete logic here
-                    }}
+                    onPress={handleOnDeletePress}
                   >
                     <Ionicons
                       name="trash-outline"

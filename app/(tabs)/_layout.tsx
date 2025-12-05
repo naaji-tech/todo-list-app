@@ -33,7 +33,7 @@ export default function TapLayout() {
             colorScheme === "dark"
               ? theme.colors.dark.bg
               : theme.colors.light.bg,
-          // // iOS shadow
+          // iOS shadow
           shadowColor:
             colorScheme === "dark"
               ? theme.colors.dark.text
@@ -41,9 +41,9 @@ export default function TapLayout() {
           shadowOffset: { width: 0, height: -4 },
           shadowOpacity: 0.2,
           shadowRadius: 6,
-          // // Android elevation
+          // Android elevation
           elevation: 10,
-          // // optional: border top to blend with shadow
+          // optional: border top to blend with shadow
           borderTopWidth: 0,
         },
         tabBarActiveTintColor:

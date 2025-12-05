@@ -1,25 +1,29 @@
-import FloatingButton from "@/components/ui/Button";
+import { FloatingButton } from "@/components/ui/Button";
 import CompleteTaskList from "@/components/ui/complete/CompleteTaskList";
 import theme from "@/constants/colors";
-import { TaskGroup } from "@/constants/types";
-import { TASK_LIST } from "@/data/placeholder-data";
-import { groupTasksByDate } from "@/util/util";
+import useTasks from "@/hooks/useTasks";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import { FlatList, Text, View } from "react-native";
 
 export default function Complete() {
-  const taskData = TASK_LIST;
+  const { groupedTasks, hasCompleteTasks } = useTasks();
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const [groupedTasks, setGroupedTasks] = useState<TaskGroup[]>([]);
+  const router = useRouter();
 
-  const hasCompleteTasks = TASK_LIST.some((task) => task.isComplete);
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, [])
+  );
 
-  useEffect(() => {
-    const grouped = groupTasksByDate(taskData);
-    setGroupedTasks(grouped);
-    console.log("Grouped Tasks by Date:", grouped);
-  }, [taskData]);
+  const handleFloatingButtonPress = () => {
+    router.push({
+      pathname: "/task/new-task",
+    });
+  };
 
   if (!hasCompleteTasks) {
     return (
@@ -37,13 +41,19 @@ export default function Complete() {
   return (
     <View className="flex-1 bg-gray-300 dark:bg-gray-900">
       <FlatList
+        key={refreshKey}
         className="flex-1 px-7 pt-6"
         data={groupedTasks}
         renderItem={({ item }) => {
           return <CompleteTaskList date={item.date} tasks={item.tasks} />;
         }}
       />
-      <FloatingButton />
+      <FloatingButton
+        buttonText="New task"
+        icon="add"
+        iconSize={20}
+        onPress={handleFloatingButtonPress}
+      />
     </View>
   );
 }

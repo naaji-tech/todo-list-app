@@ -1,4 +1,5 @@
 import theme from "@/constants/colors";
+import useTasks from "@/hooks/useTasks";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -20,6 +21,28 @@ export default function NewTaskForm() {
   const [isImportant, setIsImportant] = useState(false);
 
   const router = useRouter();
+  const { createTask } = useTasks();
+
+  const handleCreateTask = () => {
+    console.log("Create task button pressed.");
+
+    createTask(
+      taskName,
+      selectedDate,
+      selectedTime.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      isImportant,
+      false
+    );
+
+    router.dismissTo("/");
+  };
+
+  const handleSetImportantPress = () => {
+    setIsImportant(!isImportant);
+  };
 
   return (
     <ScrollView>
@@ -57,9 +80,7 @@ export default function NewTaskForm() {
         </View>
 
         <Pressable
-          onPress={() => {
-            setIsImportant(!isImportant);
-          }}
+          onPress={handleSetImportantPress}
           className="flex flex-row items-center justify-center self-start gap-2 py-2"
         >
           <Ionicons
@@ -74,13 +95,7 @@ export default function NewTaskForm() {
           </Text>
         </Pressable>
 
-        <ThemeButton
-          title="Create Task"
-          onPress={() => {
-            console.log("Create task button pressed.");
-            router.dismissTo("/");
-          }}
-        />
+        <ThemeButton title="Create Task" onPress={handleCreateTask} />
       </View>
     </ScrollView>
   );
